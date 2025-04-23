@@ -63,7 +63,9 @@ export default function App() {
           6: "딥러닝/머신러닝 역량을 개발하고 적용해요."
         };
 
-        const filteredData = data.filter(item => item.label !== 0);
+        const filteredData = data
+        .filter(item => item.label !== 0)
+        .sort((a, b) => b.total - a.total); // 내림차순 정렬
         
         const labels = filteredData.map(item => labelMapping[item.label] || "Unknown");
         const values = filteredData.map(item => item.total);
@@ -91,13 +93,15 @@ export default function App() {
       try {
         const response = await fetch('http://127.0.0.1:8000/preferredQualificationData/');
         const data = await response.json();
-
-        const labels = data.map(item => item.representative_sentence);
-        const values = data.map(item => item.frequency);
-
+    
+        const sortedData = data.sort((a, b) => b.frequency - a.frequency); // 내림차순 정렬
+    
+        const labels = sortedData.map(item => item.representative_sentence);
+        const values = sortedData.map(item => item.frequency);
+    
         setPreferLabels(labels);
         setPreferValues(values);
-
+    
         const preferChart = preferRef.current;
         if (preferChart) {
           const ctx2 = preferChart.ctx;
